@@ -7,10 +7,8 @@ import (
 )
 
 type CaesarPermutation struct {
-	// package private
 	SecretWord string
-	// public
-	Alphabet []rune
+	Alphabet   []rune
 }
 
 func (c *CaesarPermutation) InitializeAlphabet() {
