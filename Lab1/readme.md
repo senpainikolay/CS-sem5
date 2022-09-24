@@ -1,7 +1,7 @@
-# The title of the work
+# Laboratory Work 1. Ciphers.
 
 ### Course: Cryptography & Security
-### Author: Name Surname
+### Author: Nicolae Gherman
 
 ----
 
