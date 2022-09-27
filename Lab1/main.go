@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+
 	c := ciphers.CaesarClasic{}
 	fmt.Println("Caesar Clasic: ")
 	fmt.Println("Encrpytion: ")
@@ -40,5 +41,9 @@ func main() {
 	fmt.Println("Decryption:")
 	fmt.Println(v.Decrypt())
 	fmt.Println()
+
+	cPf := ciphers.Playfair{Msg: "iNStrumentsz", SecretWord: "MOnaRchy"}
+	cPf.Init()
+	fmt.Println(cPf.Encrypt())
 
 }
