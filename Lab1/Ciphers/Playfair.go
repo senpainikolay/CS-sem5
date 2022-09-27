@@ -6,23 +6,22 @@ import (
 )
 
 type Playfair struct {
-	grid       [5][5]string
-	Diagraphs  []string
-	Msg        string
-	SecretWord string
-	Alphabet   string
+	grid      [5][5]string
+	Diagraphs []string
+	Msg       string
+	Key       string
+	Alphabet  string
+	t1        int
+	t2        int
 }
-
-//global coords of i/j in alphabet
-var t1, t2 int
 
 func (c *Playfair) Init() {
 	// alphabet init
 	c.Msg = strings.ToLower(c.Msg)
-	c.SecretWord = strings.ToLower(c.SecretWord)
+	c.Key = strings.ToLower(c.Key)
 
 	tempAlphabet := "abcdefghijklmnopqrstuvwxyz"
-	for _, ch := range c.SecretWord {
+	for _, ch := range c.Key {
 		if ContainsElem(c.Alphabet, string(ch)) {
 			continue
 		}
@@ -38,14 +37,14 @@ func (c *Playfair) Init() {
 
 	// grid init
 	aC := 0
-	t1, t2 = -1, -1
+	c.t1, c.t2 = -1, -1
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 5; j++ {
 			if c.Alphabet[aC] == 'j' || c.Alphabet[aC] == 'i' {
-				if t1 == -1 || t2 == -1 {
-					t1, t2 = i, j
+				if c.t1 == -1 || c.t2 == -1 {
+					c.t1, c.t2 = i, j
 				} else {
-					c.grid[t1][t2] += string(c.Alphabet[aC])
+					c.grid[c.t1][c.t2] += string(c.Alphabet[aC])
 					aC += 1
 					j -= 1
 					continue
@@ -56,14 +55,17 @@ func (c *Playfair) Init() {
 		}
 	}
 
+	c.Msg = strings.ReplaceAll(c.Msg, "ij", "i")
+
 	// two letter pair elimination
 	for {
 		if checkDublicates(c.Msg) {
 			break
 		}
-		for i := 1; i < len(c.Msg); i++ {
-			if c.Msg[i] == c.Msg[i-1] {
-				c.Msg = Insert(c.Msg, "x", i)
+		for i := 0; i < len(c.Msg); i += 2 {
+			kek := c.Msg[i : i+2]
+			if kek[0] == kek[1] {
+				c.Msg = Insert(c.Msg, "x", i+1)
 				break
 			}
 		}
@@ -115,6 +117,54 @@ func (c *Playfair) Encrypt() string {
 
 }
 
+func (c *Playfair) Decrypt() string {
+
+	var decrypted string
+
+	for _, elem := range c.Diagraphs {
+		i1, j1 := c.GetGridPos(string(elem[0]))
+		i2, j2 := c.GetGridPos(string(elem[1]))
+
+		// case 1 : in the same column
+		if j1 == j2 {
+			en1 := i1 - 1
+			en2 := i2 - 1
+			if en1 == -1 {
+				en1 = 4
+			}
+
+			if en2 == -1 {
+				en2 = 4
+			}
+			decrypted += c.grid[en1][j1]
+			decrypted += c.grid[en2][j2]
+			continue
+		}
+		// case 2 : in the same row
+		if i1 == i2 {
+			en1 := j1 - 1
+			en2 := j2 - 1
+			if en1 == -1 {
+				en1 = 4
+			}
+			if en2 == -1 {
+				en2 = 4
+			}
+			decrypted += c.grid[i1][en1]
+			decrypted += c.grid[i2][en2]
+			continue
+		}
+
+		// case 3: rectangle
+		decrypted += c.grid[i1][j2]
+		decrypted += c.grid[i2][j1]
+
+	}
+
+	return decrypted
+
+}
+
 func ContainsElem(arr string, ch string) bool {
 	for _, elem := range arr {
 		if string(elem) == ch {
@@ -126,8 +176,8 @@ func ContainsElem(arr string, ch string) bool {
 }
 
 func (c *Playfair) GetGridPos(l string) (int, int) {
-	if l == "l" || l == "i" {
-		return t1, t2
+	if l == "j" || l == "i" {
+		return c.t1, c.t2
 	}
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 5; j++ {
@@ -138,7 +188,7 @@ func (c *Playfair) GetGridPos(l string) (int, int) {
 		}
 	}
 
-	return -1, -1
+	return 5, 5
 }
 
 func Insert(msg string, w string, index int) string {
@@ -146,8 +196,9 @@ func Insert(msg string, w string, index int) string {
 }
 
 func checkDublicates(msg string) bool {
-	for i := 1; i < len(msg); i++ {
-		if msg[i] == msg[i-1] {
+	for i := 0; i < len(msg); i += 2 {
+		kek := msg[i : i+2]
+		if kek[0] == kek[1] {
 			return false
 		}
 	}
