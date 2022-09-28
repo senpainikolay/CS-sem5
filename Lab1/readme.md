@@ -257,8 +257,7 @@ func (c *Playfair) Decrypt() string {
 
 
 ## The Screenshot Regarding the outputs:  
-![alt text](https://github.com/senpainikolay/CS-sem5/tree/main/Lab1/output.png?raw=true)
-
+![Screenshot](output.png)
 
 
 
