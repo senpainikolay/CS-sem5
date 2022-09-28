@@ -18,7 +18,7 @@ So we begin from first popular methods of encryptions, the  symmetric ciphers st
 
 * Clasic Caesar. Shifting the key by ASCII table on encryption and decryption.  
 
-*Encryption: 
+- Encryption: 
 ```
 func (c *CaesarClasic) Encrypt(message string, key int) string {
 
@@ -32,7 +32,7 @@ func (c *CaesarClasic) Encrypt(message string, key int) string {
 	return encrypted
 }
 ``` 
-*Decryption: 
+- Decryption: 
 ``` 
 func (c *CaesarClasic) Decrypt(message string, key int) string {
 
@@ -48,7 +48,8 @@ func (c *CaesarClasic) Decrypt(message string, key int) string {
 } 
 ```  
 
-* Caesar with Secret Word Permutation. The unique letters from secret word are permutated to the begining of the alphabet and then the rest of letters are added. The encryption and decryption are based on indexes of the newly formed string alphabet  and follows the logic from Caesar above.
+* Caesar with Secret Word Permutation. The unique letters from secret word are permutated to the begining of the alphabet and then the rest of letters are added. The encryption and decryption are based on indexes of the newly formed string alphabet  and follows the logic from Caesar above. 
+- Permutation logic
 ``` 
 func (c *CaesarPermutation) InitializeAlphabet() {
 	tempAlphabet := "abcdefghijklmnopqrstuvwxyz"
