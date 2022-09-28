@@ -32,7 +32,7 @@ func (c *CaesarClasic) Encrypt(message string, key int) string {
 	return encrypted
 }
 ``` 
-1. Decryption: 
+2. Decryption: 
 ``` 
 func (c *CaesarClasic) Decrypt(message string, key int) string {
 
@@ -118,7 +118,142 @@ func (c *Vigenere) Decrypt() string {
 
 	return decrypted
 }
+``` 
+
+* Playfair cipher. <br /> 
+After adjusting the alphabet to a custom one like shown in Caesar with permutation above, it is placed in a 5x5 grid ( i/j beiing the same letter). <br/> 
+
+1. Then the message are splitted in  diagraphs corresponding to the use cases: 
+```  
+func (c *Playfair) InitSteps() {
+	// two letter pair elimination
+	for {
+		if checkDublicates(c.Msg) {
+			break
+		}
+		for i := 2; i < len(c.Msg); i += 2 {
+			kek := c.Msg[i-2 : i]
+			if kek[0] == kek[1] {
+				c.Msg = Insert(c.Msg, "x", i-1)
+				break
+			}
+		}
+	}
+	// adding extra bogus letter if there is a non paired diagraph
+	if math.Mod(float64(len(c.Msg)), 2) == 1 {
+		c.Msg += "z"
+
+	}
+	// forming the actual Diagraphs
+	for i := 0; i < len(c.Msg); i += 2 {
+		c.Diagraphs = append(c.Diagraphs, c.Msg[i:i+2])
+	}
+
+}
+``` 
+2. The 3 casses for: <br /> 
+2.1 Encryption:  
+``` 
+func (c *Playfair) Encrypt() string {
+	c.InitSteps()
+
+	var encrypted string
+
+	for _, elem := range c.Diagraphs {
+		i1, j1 := c.GetGridPos(string(elem[0]))
+		i2, j2 := c.GetGridPos(string(elem[1]))
+
+		// case 1 : in the same column
+		if j1 == j2 {
+			en1 := int(math.Mod(float64(i1+1), 5))
+			en2 := int(math.Mod(float64(i2+1), 5))
+			encrypted += c.grid[en1][j1]
+			encrypted += c.grid[en2][j2]
+			continue
+		}
+		// case 2 : in the same row
+		if i1 == i2 {
+			en1 := int(math.Mod(float64(j1+1), 5))
+			en2 := int(math.Mod(float64(j2+1), 5))
+			encrypted += c.grid[i1][en1]
+			encrypted += c.grid[i2][en2]
+			continue
+		}
+
+		// case 3: rectangle
+		encrypted += c.grid[i1][j2]
+		encrypted += c.grid[i2][j1]
+
+	}
+
+	return encrypted
+
+}
 ```
+
+
+2.2: Decryption:  
+``` 
+func (c *Playfair) Decrypt() string {
+
+	c.InitSteps()
+
+	var decrypted string
+
+	for _, elem := range c.Diagraphs {
+		i1, j1 := c.GetGridPos(string(elem[0]))
+		i2, j2 := c.GetGridPos(string(elem[1]))
+
+		// case 1 : in the same column
+		if j1 == j2 {
+			en1 := i1 - 1
+			en2 := i2 - 1
+			if en1 == -1 {
+				en1 = 4
+			}
+
+			if en2 == -1 {
+				en2 = 4
+			}
+			decrypted += c.grid[en1][j1]
+			decrypted += c.grid[en2][j2]
+			continue
+		}
+		// case 2 : in the same row
+		if i1 == i2 {
+			en1 := j1 - 1
+			en2 := j2 - 1
+			if en1 == -1 {
+				en1 = 4
+			}
+			if en2 == -1 {
+				en2 = 4
+			}
+			decrypted += c.grid[i1][en1]
+			decrypted += c.grid[i2][en2]
+			continue
+		}
+
+		// case 3: rectangle
+		decrypted += c.grid[i1][j2]
+		decrypted += c.grid[i2][j1]
+
+	}
+	fnDe := decrypted
+
+	for i := 2; i < len(decrypted); i++ {
+		if decrypted[i-2] == decrypted[i] {
+			fnDe = Rm(fnDe, i-1)
+
+		}
+	}
+
+	return fnDe
+
+} 
+``` 
+
+
 
 
 ## Conclusions / Screenshots / Results
