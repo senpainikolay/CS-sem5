@@ -55,17 +55,18 @@ func (c *Playfair) Init() {
 		}
 	}
 
-	c.Msg = strings.ReplaceAll(c.Msg, "ij", "i")
+}
 
+func (c *Playfair) InitSteps() {
 	// two letter pair elimination
 	for {
 		if checkDublicates(c.Msg) {
 			break
 		}
-		for i := 0; i < len(c.Msg); i += 2 {
-			kek := c.Msg[i : i+2]
+		for i := 2; i < len(c.Msg); i += 2 {
+			kek := c.Msg[i-2 : i]
 			if kek[0] == kek[1] {
-				c.Msg = Insert(c.Msg, "x", i+1)
+				c.Msg = Insert(c.Msg, "x", i-1)
 				break
 			}
 		}
@@ -83,6 +84,7 @@ func (c *Playfair) Init() {
 }
 
 func (c *Playfair) Encrypt() string {
+	c.InitSteps()
 
 	var encrypted string
 
@@ -118,6 +120,9 @@ func (c *Playfair) Encrypt() string {
 }
 
 func (c *Playfair) Decrypt() string {
+	c.Msg = strings.ReplaceAll(c.Msg, "ij", "i")
+
+	c.InitSteps()
 
 	var decrypted string
 
@@ -160,8 +165,16 @@ func (c *Playfair) Decrypt() string {
 		decrypted += c.grid[i2][j1]
 
 	}
+	fnDe := decrypted
 
-	return decrypted
+	for i := 2; i < len(decrypted); i++ {
+		if decrypted[i-2] == decrypted[i] {
+			fnDe = Rm(fnDe, i-1)
+
+		}
+	}
+
+	return fnDe
 
 }
 
@@ -191,13 +204,17 @@ func (c *Playfair) GetGridPos(l string) (int, int) {
 	return 5, 5
 }
 
+func Rm(msg string, index int) string {
+	return string(msg[:index]) + string(msg[index+1:])
+}
+
 func Insert(msg string, w string, index int) string {
 	return string(msg[:index]) + w + string(msg[index:])
 }
 
 func checkDublicates(msg string) bool {
-	for i := 0; i < len(msg); i += 2 {
-		kek := msg[i : i+2]
+	for i := 2; i < len(msg); i += 2 {
+		kek := msg[i-2 : i]
 		if kek[0] == kek[1] {
 			return false
 		}

@@ -43,18 +43,17 @@ func main() {
 	fmt.Println()
 
 	fmt.Println("Playfair cipher:")
-	msg = "hammerhello"
+	msg = "hammerhellohamm"
 	key = "FAFKEKLOL"
 	fmt.Printf("The message: %v\n", msg)
 	fmt.Printf("The Key: %v\n", key)
-
 	cPf := ciphers.Playfair{Msg: msg, Key: key}
 	cPf.Init()
 	fmt.Println("Encrpytion: ")
 	fmt.Println(cPf.Encrypt())
 	fmt.Println()
 	fmt.Println("Playfair cipher:")
-	msg = "ijfsknkqijlffg"
+	msg = "ijfsknkqijlffgijfss"
 	fmt.Printf("The message: %v\n", msg)
 	fmt.Printf("The Key: %v\n", key)
 	cPf2 := ciphers.Playfair{Msg: msg, Key: key}
