@@ -18,7 +18,7 @@ So we begin from first popular methods of encryptions, the  symmetric ciphers st
 
 * Clasic Caesar. Shifting the key by ASCII table on encryption and decryption.  
 
-- Encryption: 
+1.  Encryption: 
 ```
 func (c *CaesarClasic) Encrypt(message string, key int) string {
 
@@ -32,7 +32,7 @@ func (c *CaesarClasic) Encrypt(message string, key int) string {
 	return encrypted
 }
 ``` 
-- Decryption: 
+1. Decryption: 
 ``` 
 func (c *CaesarClasic) Decrypt(message string, key int) string {
 
@@ -49,7 +49,7 @@ func (c *CaesarClasic) Decrypt(message string, key int) string {
 ```  
 
 * Caesar with Secret Word Permutation. The unique letters from secret word are permutated to the begining of the alphabet and then the rest of letters are added. The encryption and decryption are based on indexes of the newly formed string alphabet  and follows the logic from Caesar above. 
-- Permutation logic
+1. Permutation logic
 ``` 
 func (c *CaesarPermutation) InitializeAlphabet() {
 	tempAlphabet := "abcdefghijklmnopqrstuvwxyz"
@@ -72,7 +72,53 @@ func (c *CaesarPermutation) InitializeAlphabet() {
 	fmt.Printf("The permutated alphabet: %v \n", string(c.Alphabet))
 }
 ``` 
-* If needed, screenshots.
+
+* Vigenere Cipher 
+After forming the keystream which would equal to the length of the plain text, it is used ASCII TABLE to perform the calculation
+1. Encryption:  
+ The plaintext(P) and keystream(K) are added modulo 26.  
+ Ei = (Pi + Ki) mod 26
+```  
+func (c *Vigenere) Encrypt() string {
+
+	var encrypted string
+
+	for i := 0; i < len(c.msg); i++ {
+		enCh := math.Mod(float64(int(c.msg[i])+int(c.keystream[i])-2*65), 26)
+		encrypted += string(int(enCh) + 65)
+
+	}
+	for _, idx := range c.spaceIndexArr {
+		newSlice := encrypted[:idx] + " " + encrypted[idx:]
+		encrypted = newSlice
+	}
+
+	return encrypted
+}
+
+```
+
+2. Decryoption
+Di = (Ei - Ki + 26) mod 26 
+
+```
+func (c *Vigenere) Decrypt() string {
+
+	var decrypted string
+
+	for i := 0; i < len(c.msg); i++ {
+		deCh := math.Mod(float64(int(c.msg[i])-int(c.keystream[i])-2*65), 26)
+		decrypted += string(int(deCh) + 26 + 65)
+	}
+
+	for _, idx := range c.spaceIndexArr {
+		newSlice := decrypted[:idx] + " " + decrypted[idx:]
+		decrypted = newSlice
+	}
+
+	return decrypted
+}
+```
 
 
 ## Conclusions / Screenshots / Results
