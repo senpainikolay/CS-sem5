@@ -16,7 +16,7 @@ So we begin from first popular methods of encryptions, the  symmetric ciphers st
 
 ## Implementation description
 
-* Clasic Caesar. Shifting the key by ASCII table on encryption and decryption.  
+* Clasic Caesar. <br /> Shifting the key by ASCII table on encryption and decryption.  
 
 1.  Encryption: 
 ```
@@ -48,7 +48,7 @@ func (c *CaesarClasic) Decrypt(message string, key int) string {
 } 
 ```  
 
-* Caesar with Secret Word Permutation. The unique letters from secret word are permutated to the begining of the alphabet and then the rest of letters are added. The encryption and decryption are based on indexes of the newly formed string alphabet  and follows the logic from Caesar above. 
+* Caesar with Secret Word Permutation. <br />  The unique letters from secret word are permutated to the begining of the alphabet and then the rest of letters are added. The encryption and decryption are based on indexes of the newly formed string alphabet  and follows the logic from Caesar above. 
 1. Permutation logic
 ``` 
 func (c *CaesarPermutation) InitializeAlphabet() {
@@ -73,7 +73,7 @@ func (c *CaesarPermutation) InitializeAlphabet() {
 }
 ``` 
 
-* Vigenere Cipher 
+* Vigenere Cipher <br />
 After forming the keystream which would equal to the length of the plain text, it is used ASCII TABLE to perform the calculation
 1. Encryption:  
  The plaintext(P) and keystream(K) are added modulo 26.  
@@ -98,7 +98,7 @@ func (c *Vigenere) Encrypt() string {
 
 ```
 
-2. Decryoption
+2. Decryoption:
 Di = (Ei - Ki + 26) mod 26 
 
 ```
