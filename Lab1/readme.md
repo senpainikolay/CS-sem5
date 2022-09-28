@@ -98,7 +98,7 @@ func (c *Vigenere) Encrypt() string {
 
 ```
 
-2. Decryoption:
+2. Decryoption: <br /> 
 Di = (Ei - Ki + 26) mod 26 
 
 ```
@@ -256,4 +256,10 @@ func (c *Playfair) Decrypt() string {
 
 
 
-## Conclusions / Screenshots / Results
+## The Screenshot Regarding the outputs:  
+![alt text](https://github.com/senpainikolay/CS-sem5/blob/main/output.png?raw=true)
+
+
+
+
+
