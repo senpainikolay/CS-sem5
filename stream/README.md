@@ -103,7 +103,7 @@ It follows the same logic from Encryption, the encrypted text is xored with the 
 
 
 
-## The Screenshot Regarding the runing tests form des_test.go:  
+## The Screenshot Regarding the runing tests form rc4_test.go:  
 ![Screenshot](output.png)
 
 
