@@ -1,7 +1,7 @@
 package key
 
 import (
-	p "github.com/senpainikolay/CS-sem5/Lab2/block/permutations"
+	p "github.com/senpainikolay/CS-sem5/block/permutations"
 )
 
 type StringArr []string

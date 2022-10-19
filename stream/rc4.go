@@ -68,28 +68,27 @@ func (c *RC4) keySchedule(Key string) {
 	for i := 0; i < c.NR_OF_BYTES; i++ {
 		c.s[i] = byte(i)
 	}
-	K := make([]byte, 0)
+	T := make([]byte, 0)
 
-	// Init Keystream byte array for key scheduling
-	remainder := math.Mod(float64(c.NR_OF_BYTES), float64(len([]byte(Key))))
 	// add the key to the Keystream for key scheduling
 	for {
-		if len(K) >= c.NR_OF_BYTES {
+		if len(T) >= c.NR_OF_BYTES {
 			break
 		}
-		K = append(K, []byte(Key)...)
+		T = append(T, []byte(Key)...)
 	}
+	remainder := math.Mod(float64(c.NR_OF_BYTES), float64(len([]byte(Key))))
 
 	// adjust Keystream lenght for key scheduling
 	if remainder != 0.0 {
-		adjustedSlice := K[:len(K)-len([]byte(Key))+int(remainder)]
-		K = adjustedSlice
+		adjustedSlice := T[:len(T)-len([]byte(Key))+int(remainder)]
+		T = adjustedSlice
 	}
 
 	//key scheuling
 	j := 0
 	for i := 0; i < c.NR_OF_BYTES; i++ {
-		j = int(math.Mod(float64(j)+float64(c.s[i])+float64(K[i]), float64(c.NR_OF_BYTES)))
+		j = int(math.Mod(float64(j)+float64(c.s[i])+float64(T[i]), float64(c.NR_OF_BYTES)))
 		c.s[i], c.s[j] = c.s[j], c.s[i]
 	}
 

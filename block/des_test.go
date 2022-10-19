@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	p "github.com/senpainikolay/CS-sem5/Lab2/block/permutations"
+	p "github.com/senpainikolay/CS-sem5/block/permutations"
 )
 
 func TestEncrypt(t *testing.T) {

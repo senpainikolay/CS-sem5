@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	ciphers "github.com/senpainikolay/CS-sem5/Lab1/Ciphers"
+	ciphers "github.com/senpainikolay/CS-sem5/Ciphers"
 )
 
 func main() {

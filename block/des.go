@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	k "github.com/senpainikolay/CS-sem5/Lab2/block/key"
-	p "github.com/senpainikolay/CS-sem5/Lab2/block/permutations"
+	k "github.com/senpainikolay/CS-sem5/block/key"
+	p "github.com/senpainikolay/CS-sem5/block/permutations"
 )
 
 var Sbox = p.GetSBox()
