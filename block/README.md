@@ -1,4 +1,4 @@
-# Laboratory Work 2. Stream Cipher. 
+# Laboratory Work 2. The Part with Stream Cipher. 
 
 ### Course: Cryptography & Security
 ### Author: Nicolae Gherman
