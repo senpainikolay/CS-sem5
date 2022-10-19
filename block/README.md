@@ -1,4 +1,4 @@
-# Laboratory Work 2. The Part with Stream Cipher. 
+# Laboratory Work 2. The Part with Block Cipher. 
 
 ### Course: Cryptography & Security
 ### Author: Nicolae Gherman
@@ -14,7 +14,7 @@ A block cipher is an encryption algorithm that encrypts a fixed size of n-bits o
 ## Objectives:
 
 * Get familiar with block ciphers. 
-* Implement the Encryption and Decryption methods of a choose algorithm,  DES in this case.
+* Implement the Encryption and Decryption methods of a choosen algorithm,  DES in this case.
 
 ## Implementation description
 I have to introduce you to the Permute method which will be constantly used to modify/permute a the bit array: 
