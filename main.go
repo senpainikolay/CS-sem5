@@ -2,12 +2,26 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	ciphers "github.com/senpainikolay/CS-sem5/Ciphers"
+	asymmetric "github.com/senpainikolay/CS-sem5/asymmetric"
 )
 
 func main() {
+	RunAsymmetricCipher()
+	RunClassicalCiphers()
+}
 
+func RunAsymmetricCipher() {
+	asymmetricCph := asymmetric.RSA{}
+	en := asymmetric.CipherEncrypt(&asymmetricCph, "Test :-)")
+	de := asymmetric.CipherDecrypt(&asymmetricCph, en)
+	log.Println(en)
+	log.Println(de)
+}
+
+func RunClassicalCiphers() {
 	c := ciphers.CaesarClasic{}
 	fmt.Println("Caesar Clasic: ")
 	fmt.Println("Encrpytion: ")
@@ -60,5 +74,4 @@ func main() {
 	cPf2.Init()
 	fmt.Println("Decryption:")
 	fmt.Println(cPf2.Decrypt())
-
 }
