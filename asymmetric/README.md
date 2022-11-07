@@ -121,7 +121,7 @@ k := 0
 
 
 ## The Screenshot Regarding the runing tests form res_test.go:  
-![Screenshot](output.png)
+![Screenshot](Screenshot.png)
 
 
 
