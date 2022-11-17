@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"log"
 
-	ciphers "github.com/senpainikolay/CS-sem5/Ciphers"
 	asymmetric "github.com/senpainikolay/CS-sem5/asymmetric"
+	classicalCiphers "github.com/senpainikolay/CS-sem5/classicalCiphers"
+	serverDBsimulation "github.com/senpainikolay/CS-sem5/db_simulation/server"
 )
 
 func main() {
-	RunAsymmetricCipher()
-	RunClassicalCiphers()
+	//RunAsymmetricCipher()
+	// RunClassicalclassicalCiphers()
+	serverDBsimulation.RunDBSimulationServer()
+
 }
 
 func RunAsymmetricCipher() {
@@ -21,8 +24,8 @@ func RunAsymmetricCipher() {
 	log.Println(de)
 }
 
-func RunClassicalCiphers() {
-	c := ciphers.CaesarClasic{}
+func RunClassicalclassicalCiphers() {
+	c := classicalCiphers.CaesarClasic{}
 	fmt.Println("Caesar Clasic: ")
 	fmt.Println("Encrpytion: ")
 	fmt.Println(c.Encrypt("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", 23))
@@ -31,7 +34,7 @@ func RunClassicalCiphers() {
 	fmt.Println()
 
 	fmt.Println("Caesar with permutaions: ")
-	cP := ciphers.CaesarPermutation{SecretWord: "Pneumonoultramicroscopicsilicovolcanoconiosis"}
+	cP := classicalCiphers.CaesarPermutation{SecretWord: "Pneumonoultramicroscopicsilicovolcanoconiosis"}
 	cP.InitializeAlphabet()
 	fmt.Println("Encrpytion: ")
 	fmt.Println(cP.Encrypt("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", 24))
@@ -40,7 +43,7 @@ func RunClassicalCiphers() {
 	fmt.Println()
 
 	fmt.Println("Vigenere cipher:")
-	v := ciphers.Vigenere{}
+	v := classicalCiphers.Vigenere{}
 	msg := "Vigenere Cipher Encryption Decryption"
 	key := "FAFKEK"
 	fmt.Printf("The message: %v\n", msg)
@@ -61,7 +64,7 @@ func RunClassicalCiphers() {
 	key = "FAFKEKLOL"
 	fmt.Printf("The message: %v\n", msg)
 	fmt.Printf("The Key: %v\n", key)
-	cPf := ciphers.Playfair{Msg: msg, Key: key}
+	cPf := classicalCiphers.Playfair{Msg: msg, Key: key}
 	cPf.Init()
 	fmt.Println("Encrpytion: ")
 	fmt.Println(cPf.Encrypt())
@@ -70,7 +73,7 @@ func RunClassicalCiphers() {
 	msg = "ijfsknkqijlffgijfss"
 	fmt.Printf("The message: %v\n", msg)
 	fmt.Printf("The Key: %v\n", key)
-	cPf2 := ciphers.Playfair{Msg: msg, Key: key}
+	cPf2 := classicalCiphers.Playfair{Msg: msg, Key: key}
 	cPf2.Init()
 	fmt.Println("Decryption:")
 	fmt.Println(cPf2.Decrypt())

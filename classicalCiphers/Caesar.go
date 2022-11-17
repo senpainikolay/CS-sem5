@@ -1,4 +1,4 @@
-package ciphers
+package classicalciphers
 
 import (
 	"math"

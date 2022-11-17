@@ -23,8 +23,8 @@ type PublicKey struct {
 
 func (c *RSA) GenerateKeys() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	p := GenerateFirstPrimeNumbersInRange(50, 80)
-	q := GenerateFirstPrimeNumbersInRange(80, 100)
+	p := GenerateFirstPrimeNumbersInRange(2, 10)
+	q := GenerateFirstPrimeNumbersInRange(10, 20)
 	e := 2
 	phi := (p - 1) * (q - 1)
 	for e < phi {
