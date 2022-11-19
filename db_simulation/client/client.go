@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"log"
+	mathRand "math/rand"
 
 	hashArgon2 "github.com/senpainikolay/CS-sem5/db_simulation/argon2"
 	inMemoryDB "github.com/senpainikolay/CS-sem5/db_simulation/database"
@@ -26,52 +27,49 @@ func GetClientInterfaceSimulation() *ClientInterfaceSimulation {
 	}
 }
 
-func (c *ClientInterfaceSimulation) RegisterCredentials(username string, pw string) bool {
+func (c *ClientInterfaceSimulation) RegisterCredentials(username string, pw string) string {
 
-	hashedPassword := hashArgon2.GetTheHashOnPassword(pw)
-	en, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, &c.RSAPrivateKey.PublicKey, hashedPassword, c.RSAlabel)
+	hashedPassword := hashArgon2.GetTheHashOnText(pw)
+	c.db.RegisterUser(username, hashedPassword)
+	token := randStr(10)
+	hashedToken := hashArgon2.GetTheHashOnText(token)
+	en, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, &c.RSAPrivateKey.PublicKey, hashedToken, c.RSAlabel)
 	if err != nil {
-		return true
+		log.Fatal(" RSA Encrytion failed ")
 	}
-
-	c.db.RegisterUser(username, en)
-	return false
+	c.db.UserToken[username] = en
+	return token
 
 }
 
-func (c *ClientInterfaceSimulation) LogInCredentials(username string, pw string) bool {
+func (c *ClientInterfaceSimulation) LogInCredentials(username string, pw string, tk string) string {
 
-	hashedPassword := hashArgon2.GetTheHashOnPassword(pw)
+	hashedPassword := hashArgon2.GetTheHashOnText(pw)
 	db_pass := c.db.GetUserPassword(username)
-	de, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, c.RSAPrivateKey, db_pass, c.RSAlabel)
-	if err != nil {
-		return true
-	}
-	res := bytes.Compare(hashedPassword, de)
-	if res == 0 {
-		return false
-	}
-
-	return true
-
-}
-
-func (c *ClientInterfaceSimulation) DeleteCredentials(username string, pw string) bool {
-
-	hashedPassword := hashArgon2.GetTheHashOnPassword(pw)
-	db_pass := c.db.GetUserPassword(username)
-	de, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, c.RSAPrivateKey, db_pass, c.RSAlabel)
-	if err != nil {
-		return true
-	}
-	res := bytes.Compare(hashedPassword, de)
+	res := bytes.Compare(hashedPassword, db_pass)
 	if res != 0 {
-		log.Println("NOT CORRECT DATA!")
-		return true
-
+		return "wrong password or user does not exist"
+	}
+	hashedToken := hashArgon2.GetTheHashOnText(tk)
+	de, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, c.RSAPrivateKey, c.db.UserToken[username], c.RSAlabel)
+	if err != nil {
+		return "Error on Authentication"
+	}
+	res = bytes.Compare(hashedToken, de)
+	if res != 0 {
+		return "Unsucessful Authentication"
 	}
 
-	c.db.Delete(username)
-	return false
+	return "Success Log In"
 
+}
+
+func randStr(n int) string {
+	charset := []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = charset[mathRand.Intn(len(charset))]
+	}
+	return string(b)
 }

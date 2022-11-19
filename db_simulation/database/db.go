@@ -3,11 +3,13 @@ package inMemoryDB
 // In Memory database
 
 type Database struct {
-	mapDB map[string][]byte
+	mapDB     map[string][]byte
+	UserToken map[string][]byte
 }
 
 func GetDB() *Database {
 	return &Database{
+		make(map[string][]byte),
 		make(map[string][]byte),
 	}
 }

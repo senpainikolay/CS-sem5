@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
+	"time"
 
 	asymmetric "github.com/senpainikolay/CS-sem5/asymmetric"
 	classicalCiphers "github.com/senpainikolay/CS-sem5/classicalCiphers"
@@ -10,6 +12,7 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	//RunAsymmetricCipher()
 	// RunClassicalclassicalCiphers()
 	serverDBsimulation.RunDBSimulationServer()

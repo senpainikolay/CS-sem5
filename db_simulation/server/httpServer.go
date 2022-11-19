@@ -14,8 +14,7 @@ var client = clientSimulation.GetClientInterfaceSimulation()
 func RunDBSimulationServer() {
 	r := mux.NewRouter()
 	r.HandleFunc("/register/{usr}/{val}", RegisterUser).Methods("POST")
-	r.HandleFunc("/login/{usr}/{val}", LogInUser).Methods("POST")
-	r.HandleFunc("/delete/{usr}/{val}", DeleteUser).Methods("DELETE")
+	r.HandleFunc("/login/{usr}/{val}/{token}", LogInUser).Methods("POST")
 	log.Println("Runining on localhost:8080")
 	http.ListenAndServe(":8080", r)
 }
@@ -24,42 +23,16 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	usr := vars["usr"]
 	val := vars["val"]
-	var resp string
-	err := client.RegisterCredentials(usr, val)
-	if err {
-		resp = "Not succesful Registration"
-	} else {
-		resp = "Succesful registration"
-	}
-	fmt.Fprint(w, resp)
+	token := clientSimulation.RegisterInterface(client, usr, val) //  client.RegisterCredentials(usr, val)
+	fmt.Fprint(w, token)
 
 }
 func LogInUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	usr := vars["usr"]
 	val := vars["val"]
-	var resp string
-	err := client.LogInCredentials(usr, val)
-	if err {
-		resp = "Not succesful Log In"
-	} else {
-		resp = "Succesful log in "
-	}
-	fmt.Fprint(w, resp)
-
-}
-
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	usr := vars["usr"]
-	val := vars["val"]
-	var resp string
-	err := client.DeleteCredentials(usr, val)
-	if err {
-		resp = "Not succesful Delete"
-	} else {
-		resp = "Succesful Delete"
-	}
+	token := vars["token"]
+	resp := clientSimulation.LogInInterface(client, usr, val, token) // client.LogInCredentials(usr, val, token)
 	fmt.Fprint(w, resp)
 
 }
