@@ -101,6 +101,8 @@ return token
 Then it compares the hashed provided token with the decrypted hashed from the database. The Digital Signature itself.
 
 ``` 
+// db_simulation/client/client.go 
+
 hashedPassword := hashArgon2.GetTheHashOnText(password)
 db_pass := c.db.GetUserPassword(username)
 res := bytes.Compare(hashedPassword, db_pass)
@@ -122,6 +124,8 @@ return "Success Log In"
 
 You have to provide the data as routes variables.
 ``` 
+// db_simulation/server/httpServer.go 
+
 func RunDBSimulationServer() {
 	r := mux.NewRouter()
 	r.HandleFunc("/register/{usr}/{val}", RegisterUser).Methods("POST")
