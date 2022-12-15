@@ -14,8 +14,9 @@ type User struct {
 	Otp_enabled  bool `gorm:"default:false;"`
 	Otp_verified bool `gorm:"default:false;"`
 
-	Otp_secret   string
-	Otp_auth_url string
+	Otp_secret     string
+	Otp_auth_url   string
+	OAuth_verified bool
 }
 
 func (user *User) BeforeCreate(*gorm.DB) error {

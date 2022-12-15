@@ -111,6 +111,24 @@ func (ac *AuthController) VerifyOTP(ctx models.OTPInput) string {
 	return string(resp)
 }
 
+func (ac *AuthController) ValidateOAuth(id string) string {
+
+	var user models.User
+	result := ac.DB.First(&user, "id = ?", id)
+	if result.Error != nil {
+		return result.Error.Error()
+	}
+
+	dataToUpdate := models.User{
+		OAuth_verified: true,
+	}
+
+	ac.DB.Model(&user).Updates(dataToUpdate)
+
+	resp, _ := json.Marshal(user)
+	return string(resp)
+}
+
 func (ac *AuthController) ValidateOTP(ctx models.OTPInput) string {
 
 	message := "Token is invalid or user doesn't exist"
