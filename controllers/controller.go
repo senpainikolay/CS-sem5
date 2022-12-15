@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/pquerna/otp/totp"
+	hashArgon2 "github.com/senpainikolay/CS-sem5/argon2"
 )
 
 type AuthController struct {
@@ -21,6 +22,8 @@ func NewAuthController(DB *gorm.DB) AuthController {
 }
 
 func (ac *AuthController) SignUpUser(ctx models.RegisterUserInput) string {
+
+	ctx.Password = string(hashArgon2.GetTheHashOnText(ctx.Password))
 
 	newUser := models.User{
 		Name:     ctx.Name,
@@ -41,6 +44,7 @@ func (ac *AuthController) SignUpUser(ctx models.RegisterUserInput) string {
 func (ac *AuthController) LoginUser(ctx models.LoginUserInput) string {
 
 	var user models.User
+	ctx.Password = string(hashArgon2.GetTheHashOnText(ctx.Password))
 	result := ac.DB.First(&user, "email = ?", strings.ToLower(ctx.Email))
 	if result.Error != nil {
 		return "Invalid password or Email"

@@ -8,7 +8,7 @@ import (
 	"log"
 	mathRand "math/rand"
 
-	hashArgon2 "github.com/senpainikolay/CS-sem5/db_simulation/argon2"
+	hashArgon2 "github.com/senpainikolay/CS-sem5/argon2"
 	inMemoryDB "github.com/senpainikolay/CS-sem5/db_simulation/database"
 )
 
