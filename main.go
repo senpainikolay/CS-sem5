@@ -8,14 +8,14 @@ import (
 
 	asymmetric "github.com/senpainikolay/CS-sem5/asymmetric"
 	classicalCiphers "github.com/senpainikolay/CS-sem5/classicalCiphers"
-	serverDBsimulation "github.com/senpainikolay/CS-sem5/db_simulation/server"
+	server "github.com/senpainikolay/CS-sem5/server"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	//RunAsymmetricCipher()
 	// RunClassicalclassicalCiphers()
-	serverDBsimulation.RunDBSimulationServer()
+	server.RunServer()
 
 }
 
