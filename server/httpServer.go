@@ -35,6 +35,11 @@ func RunServer() {
 	r := mux.NewRouter()
 	r.HandleFunc("/register", RegisterUser).Methods("POST")
 	r.HandleFunc("/login", LogInUser).Methods("POST")
+	r.HandleFunc("/generateOTP", GenerateOTP).Methods("POST")
+	r.HandleFunc("/verifyOTP", VerifyOTP).Methods("POST")
+	r.HandleFunc("/validateOTP", ValidateOTP).Methods("POST")
+	r.HandleFunc("/disableOTP", DisableOTP).Methods("POST")
+
 	log.Println("Runining on localhost:8080")
 	http.ListenAndServe(":8080", r)
 }
@@ -48,6 +53,51 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln("There was an error decoding the request body into the struct")
 	}
 	fmt.Fprint(w, AuthController.SignUpUser(usrReg))
+
+}
+
+func GenerateOTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var otp models.OTPInput
+	err := json.NewDecoder(r.Body).Decode(&otp)
+	if err != nil {
+		log.Fatalln("There was an error decoding the request body into the struct")
+	}
+	fmt.Fprint(w, AuthController.GenerateOTP(otp))
+
+}
+func VerifyOTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var otp models.OTPInput
+	err := json.NewDecoder(r.Body).Decode(&otp)
+	if err != nil {
+		log.Fatalln("There was an error decoding the request body into the struct")
+	}
+	fmt.Fprint(w, AuthController.VerifyOTP(otp))
+
+}
+func ValidateOTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var otp models.OTPInput
+	err := json.NewDecoder(r.Body).Decode(&otp)
+	if err != nil {
+		log.Fatalln("There was an error decoding the request body into the struct")
+	}
+	fmt.Fprint(w, AuthController.ValidateOTP(otp))
+
+}
+func DisableOTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var otp models.OTPInput
+	err := json.NewDecoder(r.Body).Decode(&otp)
+	if err != nil {
+		log.Fatalln("There was an error decoding the request body into the struct")
+	}
+	fmt.Fprint(w, AuthController.DisableOTP(otp))
 
 }
 func LogInUser(w http.ResponseWriter, r *http.Request) {

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"log"
 	"strings"
 
 	"github.com/senpainikolay/CS-sem5/models"
@@ -43,15 +45,14 @@ func (ac *AuthController) LoginUser(ctx models.LoginUserInput) string {
 	if result.Error != nil {
 		return "Invalid password or Email"
 	}
-
 	return "Succesful Log In"
 }
 
 func (ac *AuthController) GenerateOTP(ctx models.OTPInput) string {
 
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:      "test.com",
-		AccountName: "kek@admin.com",
+		Issuer:      "MESSAGE_SENT_OTP_TEST:",
+		AccountName: "ACCOUNT@mail.com",
 		SecretSize:  15,
 	})
 
@@ -72,7 +73,9 @@ func (ac *AuthController) GenerateOTP(ctx models.OTPInput) string {
 
 	ac.DB.Model(&user).Updates(dataToUpdate)
 
-	return ""
+	resp, _ := json.Marshal(user)
+
+	return string(resp)
 }
 
 func (ac *AuthController) VerifyOTP(ctx models.OTPInput) string {
@@ -84,8 +87,10 @@ func (ac *AuthController) VerifyOTP(ctx models.OTPInput) string {
 	if result.Error != nil {
 		return result.Error.Error()
 	}
+	log.Println(ctx.Token)
+	log.Println(user.Otp_secret)
 
-	valid := totp.Validate(ctx.Token, user.Otp_secret)
+	valid := ctx.Token == user.Otp_secret
 	if !valid {
 		return message
 	}
@@ -97,7 +102,9 @@ func (ac *AuthController) VerifyOTP(ctx models.OTPInput) string {
 
 	ac.DB.Model(&user).Updates(dataToUpdate)
 
-	return ""
+	resp, _ := json.Marshal(user)
+
+	return string(resp)
 }
 
 func (ac *AuthController) ValidateOTP(ctx models.OTPInput) string {
@@ -110,11 +117,13 @@ func (ac *AuthController) ValidateOTP(ctx models.OTPInput) string {
 		return result.Error.Error()
 	}
 
-	valid := totp.Validate(ctx.Token, user.Otp_secret)
+	valid := ctx.Token == user.Otp_secret
 	if !valid {
 		return message
 	}
-	return ""
+
+	resp, _ := json.Marshal(user)
+	return string(resp)
 }
 
 func (ac *AuthController) DisableOTP(ctx models.OTPInput) string {
@@ -127,6 +136,8 @@ func (ac *AuthController) DisableOTP(ctx models.OTPInput) string {
 
 	user.Otp_enabled = false
 	ac.DB.Save(&user)
-	return ""
+
+	resp, _ := json.Marshal(user)
+	return string(resp)
 
 }
