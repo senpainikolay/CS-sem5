@@ -180,7 +180,7 @@ We get the response with user info:
 ![Screenshot](photos/14.png)    
 <br>
 
-Now we can use the actualy Playfair cipher: 
+Now we can use the actualy Playfair cipher:  <br>
 ![Screenshot](photos/15.png)   
 ![Screenshot](photos/16.png) 
 
