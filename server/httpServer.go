@@ -16,6 +16,8 @@ import (
 	"golang.org/x/oauth2/google"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	classicalCiphers "github.com/senpainikolay/CS-sem5/classicalCiphers"
 )
 
 var (
@@ -62,6 +64,11 @@ func RunServer() {
 	r.HandleFunc("/login-google/{id}", handleGoogleLogin)
 	r.HandleFunc("/callback", handleGoogleCallback)
 
+	// Classical Ciphers
+	r.HandleFunc("/caesar-simple/{method}", handleCaesarSimple)
+	r.HandleFunc("/caesar-perm/{method}", handleCaesarWithPerm)
+	r.HandleFunc("/playfair/{method}", handlePlafair)
+
 	log.Println("Runining on localhost:8080")
 	http.ListenAndServe(":8080", r)
 }
@@ -74,7 +81,7 @@ func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	content, err := getUserInfo(r.FormValue("state"), r.FormValue("code"))
+	content, err := getGoogleUserInfo(r.FormValue("state"), r.FormValue("code"))
 	if err != nil {
 		fmt.Println(err.Error())
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
@@ -83,28 +90,90 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Content: %s\n  User Updated: %s ", content, AuthController.ValidateOAuth(oauthStateString))
 }
 
-func getUserInfo(state string, code string) ([]byte, error) {
-	if state != oauthStateString {
-		return nil, fmt.Errorf("invalid oauth state")
-	}
+func handleCaesarSimple(w http.ResponseWriter, r *http.Request) {
 
-	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var input models.CaesarSimpleInput
+	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
+		log.Fatalln("There was an error decoding the request body into the struct")
 	}
+	var resp string
+	vars := mux.Vars(r)
+	switch vars["method"] {
+	case "encryption":
+		c := classicalCiphers.CaesarClasic{}
+		resp = c.Encrypt(input.PlaintText, input.Key)
+	case "decryption":
+		c := classicalCiphers.CaesarClasic{}
+		resp = c.Decrypt(input.PlaintText, input.Key)
+	default:
+		resp = "Method incorrectly specified"
+	}
+	fmt.Fprint(w, resp)
+}
 
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+func handleCaesarWithPerm(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var input models.CaesarWithPermutationInput
+	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
+		log.Fatalln("There was an error decoding the request body into the struct")
 	}
+	if !AuthController.IsOTPVerified(input.UserId) {
+		fmt.Fprint(w, "Not OTP verified")
+		return
 
-	defer response.Body.Close()
-	contents, err := ioutil.ReadAll(response.Body)
+	}
+	var resp string
+	vars := mux.Vars(r)
+
+	switch vars["method"] {
+	case "encryption":
+		cP := classicalCiphers.CaesarPermutation{SecretWord: input.Word}
+		cP.InitializeAlphabet()
+		resp = cP.Encrypt(input.PlaintText, input.Key)
+	case "decryption":
+		cP := classicalCiphers.CaesarPermutation{SecretWord: input.Word}
+		cP.InitializeAlphabet()
+		resp = cP.Decrypt(input.PlaintText, input.Key)
+	default:
+		resp = "Method incorrectly specified"
+	}
+	fmt.Fprint(w, resp)
+}
+
+func handlePlafair(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	var input models.Playfair
+	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
+		log.Fatalln("There was an error decoding the request body into the struct")
 	}
+	if !AuthController.IsOTPVerified(input.UserId) || !AuthController.IsOAuthVerified(input.UserId) {
+		fmt.Fprint(w, "Not OTP or OAuth verified")
+		return
+	}
+	var resp string
+	vars := mux.Vars(r)
 
-	return contents, nil
+	switch vars["method"] {
+	case "encryption":
+		cPf := classicalCiphers.Playfair{Msg: input.PlaintText, Key: input.Key}
+		cPf.Init()
+		resp = cPf.Encrypt()
+	case "decryption":
+		cPf := classicalCiphers.Playfair{Msg: input.PlaintText, Key: input.Key}
+		cPf.Init()
+		resp = cPf.Decrypt()
+	default:
+		resp = "Method incorrectly specified"
+	}
+	fmt.Fprint(w, resp)
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -173,6 +242,32 @@ func LogInUser(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, AuthController.LoginUser(usrLogIn))
 
+}
+
+// Helpers
+
+func getGoogleUserInfo(state string, code string) ([]byte, error) {
+	if state != oauthStateString {
+		return nil, fmt.Errorf("invalid oauth state")
+	}
+
+	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
+	}
+
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
+	}
+
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
+	}
+
+	return contents, nil
 }
 
 func goDotEnvVariable(key string) string {

@@ -129,6 +129,26 @@ func (ac *AuthController) ValidateOAuth(id string) string {
 	return string(resp)
 }
 
+func (ac *AuthController) IsOTPVerified(id string) bool {
+
+	var user models.User
+	result := ac.DB.First(&user, "id = ?", id)
+	if result.Error != nil {
+		log.Fatal(result.Error.Error())
+	}
+
+	return user.Otp_verified
+}
+func (ac *AuthController) IsOAuthVerified(id string) bool {
+
+	var user models.User
+	result := ac.DB.First(&user, "id = ?", id)
+	if result.Error != nil {
+		log.Fatal(result.Error.Error())
+	}
+	return user.OAuth_verified
+}
+
 func (ac *AuthController) ValidateOTP(ctx models.OTPInput) string {
 
 	message := "Token is invalid or user doesn't exist"
