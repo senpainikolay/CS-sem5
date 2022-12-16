@@ -149,39 +149,39 @@ func RunServer() {
 ###### For the Authorization part,  I would post the proof of requests:  
 
 I get straight to the OTP requests:  
-![Screenshot](1.png)  
+![Screenshot](photos/1.png)  
 
 Then it goes through validation and dissabling the OTP.  
-![Screenshot](2.png)   
-![Screenshot](3.png)   
+![Screenshot](photos/2.png)   
+![Screenshot](photos/3.png)   
 
 As a simple user it can use the Caesar Simple cipher:  
-![Screenshot](4.png)   
-![Screenshot](5.png) 
+![Screenshot](photos/4.png)   
+![Screenshot](photos/5.png) 
 
 Also a simple user, without OTP verification would get:  
-![Screenshot](6.png)   
-![Screenshot](7.png)  
+![Screenshot](photos/6.png)   
+![Screenshot](photos/7.png)  
 
 As we already did the validation, we can use it:  
-![Screenshot](8.png)   
-![Screenshot](9.png)  
+![Screenshot](photos/8.png)   
+![Screenshot](photos/9.png)  
 
 
 But without OAuth Google attribute, we wont be agle to use the Playfair cipher: 
-![Screenshot](10.png)   
-![Screenshot](11.png)  
+![Screenshot](photos/10.png)   
+![Screenshot](photos/11.png)  
 
 To prove the OAuth, I have included the Authentication part:  
-![Screenshot](12.png)   
-![Screenshot](13.png)  
+![Screenshot](photos/12.png)   
+![Screenshot](photos/13.png)  
 
 We get the response with user info: 
-![Screenshot](14.png)   
+![Screenshot](photos/14.png)   
 
 Now we can use the actualy Playfair cipher: 
-![Screenshot](15.png)   
-![Screenshot](16.png) 
+![Screenshot](photos/15.png)   
+![Screenshot](photos/16.png) 
 
 
 
