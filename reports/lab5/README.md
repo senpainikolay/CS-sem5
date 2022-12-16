@@ -177,7 +177,8 @@ To prove the OAuth, I have included the Authentication part:
 ![Screenshot](photos/13.png)  
 
 We get the response with user info: 
-![Screenshot](photos/14.png)   
+![Screenshot](photos/14.png)    
+<br>
 
 Now we can use the actualy Playfair cipher: 
 ![Screenshot](photos/15.png)   
